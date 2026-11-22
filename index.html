@@ -6,7 +6,6 @@
   <title>مِرسى | MIRSA - الرادار الجامعي الذكي</title>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@500;700&display=swap" rel="stylesheet">
   <style>
-    /* تعويذة الألوان والنظام البصري (Light & Dark Mode) */
     :root {
       --bg: #f8fafc;
       --surface: #ffffff;
@@ -19,7 +18,7 @@
       --warn: #f59e0b;
       --ok: #10b981;
       --border: #e2e8f0;
-      --shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+      --shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
     }
 
     body.dark {
@@ -28,53 +27,94 @@
       --surface-2: #1e293b;
       --text: #f8fafc;
       --muted: #94a3b8;
-      --primary: #3b82f6;
+      --primary: #2563eb;
       --accent: #38bdf8;
       --border: #1e293b;
-      --shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      --shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
-    body { background: var(--bg); color: var(--text); transition: 0.25s ease; padding-bottom: 50px; }
+    body { background: var(--bg); color: var(--text); transition: background 0.25s ease, color 0.25s ease; padding-bottom: 96px; }
 
-    /* الشريط العلوي */
+    /* 1. شاشة الشعار الافتتاحية (Splash Screen - 2s) */
+    #splashScreen {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    #splashScreen.fade-out {
+      opacity: 0;
+      transform: scale(1.04);
+      pointer-events: none;
+    }
+    .splash-logo {
+      width: 92px;
+      height: 92px;
+      border-radius: 26px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: 800;
+      box-shadow: 0 14px 35px rgba(14, 165, 233, 0.35);
+      animation: pulseLogo 1.4s infinite alternate ease-in-out;
+    }
+    .splash-title { font-size: 1.35rem; font-weight: 800; margin-top: 16px; }
+    .splash-sub { font-size: 0.85rem; color: var(--muted); font-family: 'Inter', sans-serif; margin-top: 4px; }
+
+    @keyframes pulseLogo {
+      from { transform: scale(0.96); }
+      to { transform: scale(1.03); }
+    }
+
+    /* الشريط العلوي البسيط */
     header {
       background: var(--surface);
       border-bottom: 1px solid var(--border);
       padding: 14px 18px;
       position: sticky;
       top: 0;
-      z-index: 50;
+      z-index: 40;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: var(--shadow);
     }
     .brand { display: flex; align-items: center; gap: 10px; }
     .logo-badge {
       background: linear-gradient(135deg, var(--primary), var(--accent));
       color: #fff;
       font-weight: 800;
-      padding: 6px 12px;
+      padding: 5px 12px;
       border-radius: 12px;
-      font-size: 1rem;
+      font-size: 0.95rem;
     }
-    .brand-sub { font-size: 0.78rem; color: var(--muted); font-family: 'Inter', sans-serif; }
-    .header-actions { display: flex; gap: 8px; }
+    .brand-sub { font-size: 0.75rem; color: var(--muted); font-family: 'Inter', sans-serif; }
     .icon-btn {
       background: var(--surface-2);
       border: 1px solid var(--border);
       color: var(--text);
-      padding: 7px 11px;
-      border-radius: 10px;
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
       cursor: pointer;
-      font-size: 0.85rem;
-      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.05rem;
     }
 
-    .container { max-width: 760px; margin: 18px auto; padding: 0 14px; }
+    .container { max-width: 720px; margin: 18px auto; padding: 0 14px; }
+    .hidden { display: none !important; }
 
-    /* بطاقة الترحيب والاختيار السريع (Onboarding) */
+    /* البطاقات والنماذج */
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -82,11 +122,15 @@
       padding: 18px;
       box-shadow: var(--shadow);
       margin-bottom: 16px;
+      animation: fadeSlide 0.3s ease;
     }
-    .hidden { display: none !important; }
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-    h2 { font-size: 1.15rem; margin-bottom: 6px; }
-    p.desc { color: var(--muted); font-size: 0.9rem; margin-bottom: 14px; }
+    h2 { font-size: 1.12rem; margin-bottom: 6px; }
+    p.desc { color: var(--muted); font-size: 0.88rem; margin-bottom: 14px; line-height: 1.6; }
 
     .form-group { margin-bottom: 12px; }
     label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 5px; }
@@ -97,7 +141,7 @@
       border: 1px solid var(--border);
       background: var(--surface-2);
       color: var(--text);
-      font-size: 0.95rem;
+      font-size: 0.94rem;
       outline: none;
     }
     .btn-primary {
@@ -107,26 +151,26 @@
       border: none;
       padding: 12px;
       border-radius: 12px;
-      font-size: 1rem;
+      font-size: 0.98rem;
       font-weight: 700;
       cursor: pointer;
       margin-top: 6px;
     }
 
-    /* شريط مسار الطالب الحالي */
-    .path-bar {
+    /* شريط المسار الحالي */
+    .path-banner {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 14px;
-      padding: 12px 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      padding: 11px 14px;
       margin-bottom: 14px;
-      gap: 10px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
-    .path-info { font-size: 0.88rem; font-weight: 700; }
-    .path-info span { color: var(--accent); }
+    .path-banner span { color: var(--accent); }
 
     /* أزرار التصفية */
     .filters { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 14px; }
@@ -136,14 +180,14 @@
       color: var(--text);
       padding: 7px 14px;
       border-radius: 999px;
-      font-size: 0.84rem;
+      font-size: 0.83rem;
       font-weight: 600;
       white-space: nowrap;
       cursor: pointer;
     }
     .pill.active { background: var(--primary); color: #fff; border-color: var(--primary); }
 
-    /* بطاقات الإعلانات والقاعات */
+    /* بطاقات الإعلانات */
     .alert-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -158,19 +202,13 @@
     .alert-card.official { border-right-color: var(--ok); }
 
     .alert-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-    .badge {
-      font-size: 0.75rem;
-      font-weight: 700;
-      padding: 3px 10px;
-      border-radius: 999px;
-      color: #fff;
-    }
+    .badge { font-size: 0.74rem; font-weight: 700; padding: 3px 10px; border-radius: 999px; color: #fff; }
     .badge.urgent { background: var(--urgent); }
     .badge.schedule { background: var(--warn); color: #111; }
     .badge.official { background: var(--ok); }
     .time { font-size: 0.78rem; color: var(--muted); }
-    .alert-title { font-size: 1rem; font-weight: 800; margin-bottom: 5px; }
-    .alert-body { font-size: 0.9rem; color: var(--muted); line-height: 1.6; }
+    .alert-title { font-size: 0.98rem; font-weight: 800; margin-bottom: 5px; }
+    .alert-body { font-size: 0.89rem; color: var(--muted); line-height: 1.6; }
     .alert-footer {
       margin-top: 10px;
       padding-top: 8px;
@@ -190,10 +228,61 @@
       font-weight: 700;
       cursor: pointer;
     }
+
+    /* شريط التنقل السفلي العائم (مطابق لأسلوب الصورة) */
+    .bottom-nav-wrap {
+      position: fixed;
+      bottom: 12px;
+      left: 12px;
+      right: 12px;
+      z-index: 60;
+      display: flex;
+      justify-content: center;
+    }
+    .bottom-nav {
+      width: 100%;
+      max-width: 540px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 6px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      box-shadow: var(--shadow);
+    }
+    .nav-item {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      border-radius: 15px;
+      padding: 9px 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: 0.22s ease;
+    }
+    .nav-item svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 2; }
+    .nav-item span { font-size: 0.8rem; font-weight: 700; }
+    .nav-item.active {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #ffffff;
+    }
   </style>
 </head>
-<body>
+<body class="dark">
 
+  <!-- 1. واجهة الشعار الافتتاحية (تختفي تلقائياً بعد 2 ثانية) -->
+  <div id="splashScreen">
+    <div class="splash-logo">مِرسى</div>
+    <div class="splash-title">المركز الجامعي مغنية</div>
+    <div class="splash-sub">MIRSA Campus Radar</div>
+  </div>
+
+  <!-- الشريط العلوي -->
   <header>
     <div class="brand">
       <div class="logo-badge">مِرسى</div>
@@ -202,16 +291,13 @@
         <div class="brand-sub">MIRSA Campus Radar</div>
       </div>
     </div>
-    <div class="header-actions">
-      <button class="icon-btn" onclick="toggleAdmin()">+ منسّق</button>
-      <button class="icon-btn" onclick="toggleTheme()">🌓</button>
-    </div>
+    <button class="icon-btn" onclick="toggleTheme()" title="تبديل المظهر">🌓</button>
   </header>
 
   <div class="container">
 
-    <!-- 1. شاشة الاختيار السريع (تظهر أول مرة أو عند تغيير الشعبة) -->
-    <section id="onboardingCard" class="card">
+    <!-- 2. شاشة اختيار الشعبة (أول مرة فقط أو عند التعديل من مساري) -->
+    <section id="onboardingView" class="card hidden">
       <h2>👋 أهلاً بك في رادار «مِرسى»</h2>
       <p class="desc">اختر معهدك وشعبتك مرة واحدة فقط — سنحفظ مسارك تلقائياً دون الحاجة لكلمة سر أو رقم بكالوريا.</p>
 
@@ -243,50 +329,78 @@
       <button class="btn-primary" onclick="saveProfile()">دخول لوحتي الفورية 🚀</button>
     </section>
 
-    <!-- 2. لوحة الطالب الرئيسية -->
-    <section id="dashboardSection" class="hidden">
-      <div class="path-bar">
-        <div class="path-info" id="activePathText"></div>
-        <button class="icon-btn" onclick="showOnboarding()">تغيير</button>
-      </div>
+    <!-- 3. المحتوى الداخلي للتطبيق (تتنقل فيه عبر الأزرار السفلية) -->
+    <div id="appShell" class="hidden">
 
-      <div class="filters">
-        <button class="pill active" onclick="setFilter('all', this)">الكل</button>
-        <button class="pill" onclick="setFilter('urgent', this)">🔴 تغيّر القاعات وعاجل</button>
-        <button class="pill" onclick="setFilter('schedule', this)">🟡 الجداول والحصص</button>
-        <button class="pill" onclick="setFilter('official', this)">🟢 إعلانات ومداولات</button>
-      </div>
+      <!-- تبويب 1: الرئيسية (الرادار والإعلانات) -->
+      <section id="tabHome">
+        <div class="path-banner">
+          <div id="activePathText"></div>
+        </div>
 
-      <div id="feedContainer"></div>
-    </section>
+        <div class="filters">
+          <button class="pill active" onclick="setFilter('all', this)">الكل</button>
+          <button class="pill" onclick="setFilter('urgent', this)">🔴 تغيّر القاعات وعاجل</button>
+          <button class="pill" onclick="setFilter('schedule', this)">🟡 الجداول والحصص</button>
+          <button class="pill" onclick="setFilter('official', this)">🟢 إعلانات ومداولات</button>
+        </div>
 
-    <!-- 3. لوحة نشر تجريبية للمنسّق (للعرض أمام اللجنة) -->
-    <section id="adminModal" class="card hidden" style="margin-top:16px; border:2px solid var(--accent);">
-      <h2>🛡️ لوحة نشر سريعة (للمنسّق / ممثل الفوج)</h2>
-      <p class="desc">جرّب نشر تنبيه جديد الآن لترى كيف يصل فوراً إلى لوحة الشعبة:</p>
-      <div class="form-group">
-        <label>نوع التنبيه</label>
-        <select id="newType">
-          <option value="urgent">عاجل / نقل قاعة</option>
-          <option value="schedule">تحديث جدول</option>
-          <option value="official">إعلان رسمي / مداولات</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>عنوان التنبيه</label>
-        <input type="text" id="newTitle" placeholder="مثال: نقل حصة الأدب الإنجليزي إلى المدرج B" />
-      </div>
-      <div class="form-group">
-        <label>التفاصيل</label>
-        <textarea id="newBody" rows="2" placeholder="اكتب تفاصيل القاعة أو التوقيت..."></textarea>
-      </div>
-      <button class="btn-primary" onclick="publishAlert()">نشر التنبيه الآن ⚡</button>
-    </section>
+        <div id="feedContainer"></div>
+      </section>
 
+      <!-- تبويب 2: المنسّق (نشر تنبيه) -->
+      <section id="tabCoordinator" class="card hidden">
+        <h2>🛡️ نشر تنبيه جديد (المنسّق)</h2>
+        <p class="desc">أضف إعلاناً أو تغيّر قاعة ليظهر فوراً في واجهة شعبتك:</p>
+        <div class="form-group">
+          <label>نوع التنبيه</label>
+          <select id="newType">
+            <option value="urgent">عاجل / نقل قاعة</option>
+            <option value="schedule">تحديث جدول</option>
+            <option value="official">إعلان رسمي / مداولات</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>عنوان التنبيه</label>
+          <input type="text" id="newTitle" placeholder="مثال: نقل حصة الأدب الإنجليزي إلى المدرج B" />
+        </div>
+        <div class="form-group">
+          <label>التفاصيل</label>
+          <textarea id="newBody" rows="3" placeholder="اكتب تفاصيل القاعة أو التوقيت..."></textarea>
+        </div>
+        <button class="btn-primary" onclick="publishAlert()">نشر التنبيه الآن ⚡</button>
+      </section>
+
+      <!-- تبويب 3: مساري (معلومات الشعبة وتغييرها) -->
+      <section id="tabProfile" class="card hidden">
+        <h2>🎓 مساري الجامعي المحفوظ</h2>
+        <p class="desc">بياناتك محفوظة محلياً على جهازك لعرض التنبيهات الخاصة بشعبتك مباشرة.</p>
+        <div id="profileDetailsCard" style="background:var(--surface-2); padding:14px; border-radius:14px; margin-bottom:14px; line-height:1.9; font-size:0.92rem;"></div>
+        <button class="btn-primary" onclick="editProfile()">تغيير المعهد أو الشعبة ✏️</button>
+      </section>
+
+    </div>
   </div>
 
+  <!-- شريط التنقل السفلي الثابت -->
+  <nav id="bottomNavWrap" class="bottom-nav-wrap hidden">
+    <div class="bottom-nav">
+      <button class="nav-item active" id="navHome" onclick="switchTab('home')">
+        <svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9.5z"/></svg>
+        <span>الرئيسية</span>
+      </button>
+      <button class="nav-item" id="navCoordinator" onclick="switchTab('coordinator')">
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M12 8v8M8 12h8"/></svg>
+        <span>المنسّق</span>
+      </button>
+      <button class="nav-item" id="navProfile" onclick="switchTab('profile')">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.8-4 14.2-4 16 0"/></svg>
+        <span>مساري</span>
+      </button>
+    </div>
+  </nav>
+
   <script>
-    // قاعدة بيانات الشعب مرتبطة بالمعاهد
     const DEPARTMENTS = {
       letters: ["اللغة الإنجليزية", "اللغة والأدب العربي"],
       tech: ["إعلام آلي", "هندسة مدنية", "علوم المادة"],
@@ -294,7 +408,13 @@
       law: ["حقوق", "علوم سياسية"]
     };
 
-    // بيانات تجريبية حية للعرض
+    const INSTITUTE_NAMES = {
+      letters: "معهد الآداب واللغات",
+      tech: "معهد العلوم والتكنولوجيا",
+      econ: "معهد العلوم الاقتصادية والتسيير",
+      law: "معهد الحقوق والعلوم السياسية"
+    };
+
     let alertsData = [
       {
         id: 1,
@@ -353,30 +473,67 @@
     }
 
     function saveProfile() {
+      const instKey = document.getElementById("instituteSelect").value;
       const profile = {
+        institute: INSTITUTE_NAMES[instKey],
         dept: document.getElementById("deptSelect").value,
         level: document.getElementById("levelSelect").value
       };
       localStorage.setItem("mirsa_profile", JSON.stringify(profile));
-      loadDashboard();
+      enterApp();
     }
 
-    function showOnboarding() {
-      document.getElementById("onboardingCard").classList.remove("hidden");
-      document.getElementById("dashboardSection").classList.add("hidden");
+    function editProfile() {
+      document.getElementById("appShell").classList.add("hidden");
+      document.getElementById("bottomNavWrap").classList.add("hidden");
+      document.getElementById("onboardingView").classList.remove("hidden");
     }
 
-    function loadDashboard() {
+    function enterApp() {
       const saved = JSON.parse(localStorage.getItem("mirsa_profile"));
       if (!saved) {
-        updateDepartments();
+        document.getElementById("onboardingView").classList.remove("hidden");
+        document.getElementById("appShell").classList.add("hidden");
+        document.getElementById("bottomNavWrap").classList.add("hidden");
         return;
       }
-      document.getElementById("onboardingCard").classList.add("hidden");
-      document.getElementById("dashboardSection").classList.remove("hidden");
+
+      document.getElementById("onboardingView").classList.add("hidden");
+      document.getElementById("appShell").classList.remove("hidden");
+      document.getElementById("bottomNavWrap").classList.remove("hidden");
+
       document.getElementById("activePathText").innerHTML =
         `مسارك: <span>${saved.dept}</span> • ${saved.level}`;
+
+      document.getElementById("profileDetailsCard").innerHTML = `
+        <div><strong>المعهد:</strong> ${saved.institute}</div>
+        <div><strong>الشعبة:</strong> ${saved.dept}</div>
+        <div><strong>المستوى والفوج:</strong> ${saved.level}</div>
+      `;
+
+      switchTab("home");
       renderFeed();
+    }
+
+    function switchTab(tab) {
+      document.getElementById("tabHome").classList.add("hidden");
+      document.getElementById("tabCoordinator").classList.add("hidden");
+      document.getElementById("tabProfile").classList.add("hidden");
+
+      document.getElementById("navHome").classList.remove("active");
+      document.getElementById("navCoordinator").classList.remove("active");
+      document.getElementById("navProfile").classList.remove("active");
+
+      if (tab === "home") {
+        document.getElementById("tabHome").classList.remove("hidden");
+        document.getElementById("navHome").classList.add("active");
+      } else if (tab === "coordinator") {
+        document.getElementById("tabCoordinator").classList.remove("hidden");
+        document.getElementById("navCoordinator").classList.add("active");
+      } else if (tab === "profile") {
+        document.getElementById("tabProfile").classList.remove("hidden");
+        document.getElementById("navProfile").classList.add("active");
+      }
     }
 
     function setFilter(type, btn) {
@@ -421,16 +578,8 @@
       });
     }
 
-    function toggleAdmin() {
-      document.getElementById("adminModal").classList.toggle("hidden");
-    }
-
     function publishAlert() {
       const saved = JSON.parse(localStorage.getItem("mirsa_profile"));
-      if (!saved) {
-        alert("اختر شعبتك أولاً!");
-        return;
-      }
       const type = document.getElementById("newType").value;
       const title = document.getElementById("newTitle").value.trim();
       const body = document.getElementById("newBody").value.trim();
@@ -450,7 +599,7 @@
 
       document.getElementById("newTitle").value = "";
       document.getElementById("newBody").value = "";
-      toggleAdmin();
+      switchTab("home");
       renderFeed();
     }
 
@@ -463,9 +612,16 @@
       document.body.classList.toggle("dark");
     }
 
-    // التشغيل الأولي
+    // التشغيل الأولي + الانتقال السحري بعد 2 ثانية من شاشة الشعار
     updateDepartments();
-    loadDashboard();
+    window.addEventListener("DOMContentLoaded", () => {
+      setTimeout(() => {
+        const splash = document.getElementById("splashScreen");
+        splash.classList.add("fade-out");
+        setTimeout(() => splash.classList.add("hidden"), 550);
+        enterApp();
+      }, 2000);
+    });
   </script>
 </body>
 </html>
