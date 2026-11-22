@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>مِرسى | MIRSA - الرادار الجامعي الذكي</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    /* تعويذة الألوان والنظام البصري (Light & Dark Mode) */
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-2: #f1f5f9;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #1e3a8a;
+      --accent: #0ea5e9;
+      --urgent: #ef4444;
+      --warn: #f59e0b;
+      --ok: #10b981;
+      --border: #e2e8f0;
+      --shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+    }
+
+    body.dark {
+      --bg: #0b1120;
+      --surface: #111827;
+      --surface-2: #1e293b;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --primary: #3b82f6;
+      --accent: #38bdf8;
+      --border: #1e293b;
+      --shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+    body { background: var(--bg); color: var(--text); transition: 0.25s ease; padding-bottom: 50px; }
+
+    /* الشريط العلوي */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 18px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--shadow);
+    }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .logo-badge {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #fff;
+      font-weight: 800;
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 1rem;
+    }
+    .brand-sub { font-size: 0.78rem; color: var(--muted); font-family: 'Inter', sans-serif; }
+    .header-actions { display: flex; gap: 8px; }
+    .icon-btn {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 7px 11px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .container { max-width: 760px; margin: 18px auto; padding: 0 14px; }
+
+    /* بطاقة الترحيب والاختيار السريع (Onboarding) */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+    }
+    .hidden { display: none !important; }
+
+    h2 { font-size: 1.15rem; margin-bottom: 6px; }
+    p.desc { color: var(--muted); font-size: 0.9rem; margin-bottom: 14px; }
+
+    .form-group { margin-bottom: 12px; }
+    label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 5px; }
+    select, input, textarea {
+      width: 100%;
+      padding: 11px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      color: var(--text);
+      font-size: 0.95rem;
+      outline: none;
+    }
+    .btn-primary {
+      width: 100%;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 6px;
+    }
+
+    /* شريط مسار الطالب الحالي */
+    .path-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      gap: 10px;
+    }
+    .path-info { font-size: 0.88rem; font-weight: 700; }
+    .path-info span { color: var(--accent); }
+
+    /* أزرار التصفية */
+    .filters { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 14px; }
+    .pill {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .pill.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    /* بطاقات الإعلانات والقاعات */
+    .alert-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-right: 5px solid var(--accent);
+      border-radius: 16px;
+      padding: 15px;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow);
+    }
+    .alert-card.urgent { border-right-color: var(--urgent); }
+    .alert-card.schedule { border-right-color: var(--warn); }
+    .alert-card.official { border-right-color: var(--ok); }
+
+    .alert-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+      color: #fff;
+    }
+    .badge.urgent { background: var(--urgent); }
+    .badge.schedule { background: var(--warn); color: #111; }
+    .badge.official { background: var(--ok); }
+    .time { font-size: 0.78rem; color: var(--muted); }
+    .alert-title { font-size: 1rem; font-weight: 800; margin-bottom: 5px; }
+    .alert-body { font-size: 0.9rem; color: var(--muted); line-height: 1.6; }
+    .alert-footer {
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px dashed var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+    .share-btn {
+      background: var(--surface-2);
+      border: none;
+      color: var(--accent);
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <div class="logo-badge">مِرسى</div>
+      <div>
+        <div style="font-weight:800; font-size:0.95rem;">المركز الجامعي مغنية</div>
+        <div class="brand-sub">MIRSA Campus Radar</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" onclick="toggleAdmin()">+ منسّق</button>
+      <button class="icon-btn" onclick="toggleTheme()">🌓</button>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- 1. شاشة الاختيار السريع (تظهر أول مرة أو عند تغيير الشعبة) -->
+    <section id="onboardingCard" class="card">
+      <h2>👋 أهلاً بك في رادار «مِرسى»</h2>
+      <p class="desc">اختر معهدك وشعبتك مرة واحدة فقط — سنحفظ مسارك تلقائياً دون الحاجة لكلمة سر أو رقم بكالوريا.</p>
+
+      <div class="form-group">
+        <label>المعهد</label>
+        <select id="instituteSelect" onchange="updateDepartments()">
+          <option value="letters">معهد الآداب واللغات</option>
+          <option value="tech">معهد العلوم والتكنولوجيا</option>
+          <option value="econ">معهد العلوم الاقتصادية والتسيير</option>
+          <option value="law">معهد الحقوق والعلوم السياسية</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>الشعبة / التخصص</label>
+        <select id="deptSelect"></select>
+      </div>
+
+      <div class="form-group">
+        <label>المستوى والفوج</label>
+        <select id="levelSelect">
+          <option value="L1 - الفوج 01">ليسانس سنة 1 - الفوج 01</option>
+          <option value="L2 - الفوج 01">ليسانس سنة 2 - الفوج 01</option>
+          <option value="L3 - الفوج 01">ليسانس سنة 3 - الفوج 01</option>
+          <option value="M1 - تخصص">ماستر سنة 1</option>
+        </select>
+      </div>
+
+      <button class="btn-primary" onclick="saveProfile()">دخول لوحتي الفورية 🚀</button>
+    </section>
+
+    <!-- 2. لوحة الطالب الرئيسية -->
+    <section id="dashboardSection" class="hidden">
+      <div class="path-bar">
+        <div class="path-info" id="activePathText"></div>
+        <button class="icon-btn" onclick="showOnboarding()">تغيير</button>
+      </div>
+
+      <div class="filters">
+        <button class="pill active" onclick="setFilter('all', this)">الكل</button>
+        <button class="pill" onclick="setFilter('urgent', this)">🔴 تغيّر القاعات وعاجل</button>
+        <button class="pill" onclick="setFilter('schedule', this)">🟡 الجداول والحصص</button>
+        <button class="pill" onclick="setFilter('official', this)">🟢 إعلانات ومداولات</button>
+      </div>
+
+      <div id="feedContainer"></div>
+    </section>
+
+    <!-- 3. لوحة نشر تجريبية للمنسّق (للعرض أمام اللجنة) -->
+    <section id="adminModal" class="card hidden" style="margin-top:16px; border:2px solid var(--accent);">
+      <h2>🛡️ لوحة نشر سريعة (للمنسّق / ممثل الفوج)</h2>
+      <p class="desc">جرّب نشر تنبيه جديد الآن لترى كيف يصل فوراً إلى لوحة الشعبة:</p>
+      <div class="form-group">
+        <label>نوع التنبيه</label>
+        <select id="newType">
+          <option value="urgent">عاجل / نقل قاعة</option>
+          <option value="schedule">تحديث جدول</option>
+          <option value="official">إعلان رسمي / مداولات</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>عنوان التنبيه</label>
+        <input type="text" id="newTitle" placeholder="مثال: نقل حصة الأدب الإنجليزي إلى المدرج B" />
+      </div>
+      <div class="form-group">
+        <label>التفاصيل</label>
+        <textarea id="newBody" rows="2" placeholder="اكتب تفاصيل القاعة أو التوقيت..."></textarea>
+      </div>
+      <button class="btn-primary" onclick="publishAlert()">نشر التنبيه الآن ⚡</button>
+    </section>
+
+  </div>
+
+  <script>
+    // قاعدة بيانات الشعب مرتبطة بالمعاهد
+    const DEPARTMENTS = {
+      letters: ["اللغة الإنجليزية", "اللغة والأدب العربي"],
+      tech: ["إعلام آلي", "هندسة مدنية", "علوم المادة"],
+      econ: ["علوم التسيير", "علوم مالية ومحاسبة"],
+      law: ["حقوق", "علوم سياسية"]
+    };
+
+    // بيانات تجريبية حية للعرض
+    let alertsData = [
+      {
+        id: 1,
+        dept: "اللغة الإنجليزية",
+        type: "urgent",
+        badge: "نقل قاعة عاجل",
+        title: "نقل حصة (Literary Analysis) من القاعة 04 إلى المدرج B",
+        body: "يُعلم طلبة الليسانس أن حصة اليوم على الساعة 10:00 ستُجرى في المدرج B بدل القاعة 04.",
+        author: "ممثل الفوج • قسم الإنجليزية",
+        time: "منذ 10 دقائق"
+      },
+      {
+        id: 2,
+        dept: "ALL",
+        type: "official",
+        badge: "إعلان عام للمركز",
+        title: "فتح باب إيداع مشاريع التخرج (مؤسسة ناشئة / القرار 1275)",
+        body: "تدعو حاضنة الأعمال بالمركز الجامعي مغنية الطلبة الراغبين في تسجيل مشاريعهم للتقرب من مكتب الحاضنة.",
+        author: "إدارة المركز الجامعي",
+        time: "منذ ساعتين"
+      },
+      {
+        id: 3,
+        dept: "اللغة الإنجليزية",
+        type: "schedule",
+        badge: "تحديث جدول",
+        title: "تعويض حصة الترجمة يوم الخميس",
+        body: "تمت برمجة الحصة التعويضية يوم الخميس على الساعة 13:30 بالقاعة 07.",
+        author: "أمانة قسم اللغة الإنجليزية",
+        time: "أمس"
+      },
+      {
+        id: 4,
+        dept: "إعلام آلي",
+        type: "urgent",
+        badge: "تأجيل حصة",
+        title: "تأجيل حصة الأعمال التطبيقية (TP Réseaux)",
+        body: "تُؤجّل حصة اليوم الصباحية إلى الأسبوع القادم في نفس التوقيت.",
+        author: "قسم العلوم والتكنولوجيا",
+        time: "منذ 25 دقيقة"
+      }
+    ];
+
+    let currentFilter = "all";
+
+    function updateDepartments() {
+      const inst = document.getElementById("instituteSelect").value;
+      const deptSelect = document.getElementById("deptSelect");
+      deptSelect.innerHTML = "";
+      DEPARTMENTS[inst].forEach(d => {
+        const opt = document.createElement("option");
+        opt.value = d;
+        opt.textContent = d;
+        deptSelect.appendChild(opt);
+      });
+    }
+
+    function saveProfile() {
+      const profile = {
+        dept: document.getElementById("deptSelect").value,
+        level: document.getElementById("levelSelect").value
+      };
+      localStorage.setItem("mirsa_profile", JSON.stringify(profile));
+      loadDashboard();
+    }
+
+    function showOnboarding() {
+      document.getElementById("onboardingCard").classList.remove("hidden");
+      document.getElementById("dashboardSection").classList.add("hidden");
+    }
+
+    function loadDashboard() {
+      const saved = JSON.parse(localStorage.getItem("mirsa_profile"));
+      if (!saved) {
+        updateDepartments();
+        return;
+      }
+      document.getElementById("onboardingCard").classList.add("hidden");
+      document.getElementById("dashboardSection").classList.remove("hidden");
+      document.getElementById("activePathText").innerHTML =
+        `مسارك: <span>${saved.dept}</span> • ${saved.level}`;
+      renderFeed();
+    }
+
+    function setFilter(type, btn) {
+      currentFilter = type;
+      document.querySelectorAll(".pill").forEach(p => p.classList.remove("active"));
+      btn.classList.add("active");
+      renderFeed();
+    }
+
+    function renderFeed() {
+      const saved = JSON.parse(localStorage.getItem("mirsa_profile"));
+      const container = document.getElementById("feedContainer");
+      container.innerHTML = "";
+
+      const filtered = alertsData.filter(item => {
+        const matchDept = item.dept === saved.dept || item.dept === "ALL";
+        const matchType = currentFilter === "all" || item.type === currentFilter;
+        return matchDept && matchType;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="card" style="text-align:center; color:var(--muted);">لا توجد تنبيهات في هذا التصنيف حالياً ✨</div>`;
+        return;
+      }
+
+      filtered.forEach(item => {
+        const card = document.createElement("div");
+        card.className = `alert-card ${item.type}`;
+        card.innerHTML = `
+          <div class="alert-top">
+            <span class="badge ${item.type}">${item.badge}</span>
+            <span class="time">${item.time}</span>
+          </div>
+          <div class="alert-title">${item.title}</div>
+          <div class="alert-body">${item.body}</div>
+          <div class="alert-footer">
+            <span>📌 ${item.author}</span>
+            <button class="share-btn" onclick="copyAlert('${item.title}')">نسخ للمشاركة 📋</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function toggleAdmin() {
+      document.getElementById("adminModal").classList.toggle("hidden");
+    }
+
+    function publishAlert() {
+      const saved = JSON.parse(localStorage.getItem("mirsa_profile"));
+      if (!saved) {
+        alert("اختر شعبتك أولاً!");
+        return;
+      }
+      const type = document.getElementById("newType").value;
+      const title = document.getElementById("newTitle").value.trim();
+      const body = document.getElementById("newBody").value.trim();
+      if (!title || !body) return;
+
+      const badges = { urgent: "عاجل / نقل قاعة", schedule: "تحديث جدول", official: "إعلان رسمي" };
+      alertsData.unshift({
+        id: Date.now(),
+        dept: saved.dept,
+        type,
+        badge: badges[type],
+        title,
+        body,
+        author: "منسّق الشعبة (بث مباشر)",
+        time: "الآن"
+      });
+
+      document.getElementById("newTitle").value = "";
+      document.getElementById("newBody").value = "";
+      toggleAdmin();
+      renderFeed();
+    }
+
+    function copyAlert(text) {
+      navigator.clipboard?.writeText(`تنبيه مِرسى: ${text}`);
+      alert("تم نسخ التنبيه لمشاركته مع زملائك!");
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle("dark");
+    }
+
+    // التشغيل الأولي
+    updateDepartments();
+    loadDashboard();
+  </script>
+</body>
+</html>
